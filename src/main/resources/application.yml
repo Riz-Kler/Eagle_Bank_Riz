@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+security:
+  jwt:
+    secret: "replace-this-32-char-secret-key-for-hmac"
+    issuer: "eagle-bank"
+    expiration-minutes: 60
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:eagle;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
