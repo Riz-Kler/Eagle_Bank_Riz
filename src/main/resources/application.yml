@@ -4,20 +4,32 @@ spring:
       name: admin
       password: admin123
 
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+
   datasource:
     url: jdbc:h2:mem:eaglebank;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa00
     password:
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate.format_sql: true
+
   h2:
     console:
       enabled: true
       path: /h2-console
+
 server:
   port: 8080
+
+app:
+  jwt:
+    secret: "change-me-super-long-random-hex"   # 256-bit+ secret
+    expiry-minutes: 60
