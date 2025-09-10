@@ -1,6 +1,6 @@
 # Eagle Bank (Barclays Take-Home)
 
-Spring Boot (Java 21) REST API: Users, Accounts, Transactions + JWT auth.
+Spring Boot (Java 24) REST API: Users, Accounts, Transactions + JWT auth.
 
 ## Run
 ```bash
