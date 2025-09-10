@@ -92,7 +92,7 @@
                 <version>3.3.3</version>
             </plugin>
 
-            <!-- Compiler plugin: ensure Java 24 -->
+            <!-- Compiler plugin: ensure Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
