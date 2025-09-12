@@ -1,43 +1,47 @@
-### Java / Spring Boot ###
-target/
+# === Java / Spring Boot ===
+/target/
 *.class
 *.jar
 *.war
-*.ear
 *.log
+logs/
+
+# === IDE junk ===
+.idea/
 *.iml
 *.ipr
 *.iws
-
-# IDE
-.idea/
+.vscode/
 *.swp
 
-### Node / React (eagle-bank-ui) ###
+# === OS junk ===
+.DS_Store
+Thumbs.db
+
+# === Node / React (eagle-bank-ui) ===
 node_modules/
 dist/
-build/
 .vite/
 coverage/
-.env
+*.env
+*.env.local
 .env.*
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Editor junk
-.vscode/
-.DS_Store
-
-# OS junk
-Thumbs.db
 
 # Ignore frontend build + dependencies
 eagle-bank-ui/node_modules/
 eagle-bank-ui/dist/
 eagle-bank-ui/.vite/
 eagle-bank-ui/coverage/
+eagle-bank-ui/.env
+eagle-bank-ui/.env.local
 
+# Lockfiles other than npm
+yarn.lock
+pnpm-lock.yaml
 
-# avoid stray vitest config in src
+# Avoid stray config
 /eagle-bank-ui/src/vitest.config.ts
