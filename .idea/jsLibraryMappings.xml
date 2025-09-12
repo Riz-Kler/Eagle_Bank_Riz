@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="JavaScriptLibraryMappings">
-    <excludedPredefinedLibrary name="Eagle_Bank_Riz/eagle-bank-ui/eagle-bank-ui/node_modules" />
-  </component>
-</project>
