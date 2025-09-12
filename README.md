@@ -1,4 +1,32 @@
 # Eagle Bank Riz Kler
+
+# Eagle Bank Riz
+
+A full-stack banking demo application with:
+- **Spring Boot** backend (REST APIs, JWT authentication)
+- **React + Vite** frontend
+- **Postgres + pgAdmin** via Docker Compose
+- **Vitest + React Testing Library** for frontend tests
+
+---
+
+## Quick Start
+
+### Backend
+```bash
+./mvnw spring-boot:run
+
+### Frontend
+
+cd eagle-bank-ui
+npm install
+npm run dev
+
+### Database
+
+docker compose up -d
+
+### For the full setup see **docs/SETUP.md**
 ---------------------------------------------------------------------------------------------------------------------
 Spring Boot (Java 21) REST API: Users, Accounts, Transactions + JWT auth.
 

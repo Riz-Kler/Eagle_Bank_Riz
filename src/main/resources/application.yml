@@ -33,3 +33,17 @@ app:
   jwt:
     secret: "change-me-super-long-random-hex"   # 256-bit+ secret
     expiry-minutes: 60
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eaglebank
+    username: eagle
+    password: eagle
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.format_sql: true
+      hibernate.default_schema: public
+  flyway:
+    enabled: true

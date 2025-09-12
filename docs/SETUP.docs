@@ -1,0 +1,70 @@
+Developer Setup
+
+---
+
+### `docs/SETUP.md`
+
+```markdown
+# Developer Setup
+
+This guide explains how to set up the Eagle Bank development environment.
+
+---
+
+## Prerequisites
+- Java 21+
+- Node.js 18+ and npm
+- Docker Desktop
+
+---
+
+## Backend (Spring Boot)
+```bash
+# from project root
+./mvnw spring-boot:run
+
+Frontend (React + Vite)
+cd eagle-bank-ui
+
+# install dependencies
+npm install
+
+# extra packages used:
+npm install zod react-hook-form @hookform/resolvers
+npm install -D vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+
+# run dev server
+npm run dev
+
+# run tests
+npm run test:ui
+
+Database (Postgres + pgAdmin)
+# from project root
+docker compose up -d
+
+Access
+
+pgAdmin: http://localhost:5050
+
+Postgres: localhost:5432
+
+Default DB: eagle_bank
+
+User/password: configured in application.yml
+
+Seed Data
+
+Demo users + accounts are seeded via migration scripts:
+
+V1_init.sql
+
+V2_seed_users_accounts.sql
+
+Notes
+
+API calls from frontend are proxied to backend via vite.config.ts
+
+JWT authentication is enabled in backend (/api/auth/*)
+
+Frontend tests run with Vitest + Testing Library
