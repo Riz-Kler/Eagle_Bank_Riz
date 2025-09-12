@@ -1,0 +1,54 @@
+# --- Default behavior ---
+# Normalize line endings to LF (Unix-style) for all text files
+* text=auto eol=lf
+
+# --- Source code ---
+*.java     text diff=java
+*.ts       text diff=typescript
+*.tsx      text diff=typescript
+*.js       text diff=javascript
+*.jsx      text diff=javascript
+*.css      text diff=css
+*.html     text diff=html
+*.yml      text
+*.yaml     text
+*.json     text
+*.md       text
+*.xml      text
+*.properties text
+*.gitignore text
+
+# --- Config files ---
+*.sh       text eol=lf
+*.bat      text eol=crlf
+*.cmd      text eol=crlf
+
+# --- Binary files (no diff) ---
+*.jar      binary
+*.class    binary
+*.war      binary
+*.ear      binary
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
+*.pdf      binary
+*.zip      binary
+*.gz       binary
+*.tar      binary
+*.tgz      binary
+*.mp4      binary
+*.mp3      binary
+
+# --- Logs & local dev ---
+*.log      text
+# backend
+target/
+
+# frontend
+/eagle-bank-ui/node_modules/
+/eagle-bank-ui/dist/
+/eagle-bank-ui/.vite/
+/eagle-bank-ui/coverage/
+/eagle-bank-ui/.eslintcache
