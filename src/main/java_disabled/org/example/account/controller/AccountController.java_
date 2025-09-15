@@ -1,0 +1,23 @@
+package org.example.account.controller;
+
+import org.example.account.dto.CreateBankAccountRequest;
+import org.example.account.dto.BankAccountResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/accounts") // <-- must match spec exactly
+public class AccountController {
+
+    private final AccountService service;
+
+    public AccountController(AccountService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<BankAccountResponse> create(@RequestBody CreateBankAccountRequest request) {
+        BankAccountResponse body = service.create(request);
+        return ResponseEntity.status(201).body(body);
+    }
+}

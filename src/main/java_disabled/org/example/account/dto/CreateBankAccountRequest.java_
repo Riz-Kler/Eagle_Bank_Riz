@@ -1,0 +1,7 @@
+package org.example.account.dto;
+
+public record CreateBankAccountRequest(
+        Long userId,
+        String accountType,   // e.g. "CHECKING" / "SAVINGS"
+        String currency       // e.g. "GBP"
+) {}

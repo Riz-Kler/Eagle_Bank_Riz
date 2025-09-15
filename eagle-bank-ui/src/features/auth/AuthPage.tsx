@@ -19,7 +19,7 @@ export default function AuthPage() {
     const lForm = useForm<z.infer<typeof loginSchema>>({ resolver: zodResolver(loginSchema) });
 
     const onRegister = async (d: z.infer<typeof registerSchema>) => {
-        await fetch('/api/v1/users', {
+        await fetch('/v1/users/', {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify({ fullName: d.fullName, email: d.email, password: d.password })
