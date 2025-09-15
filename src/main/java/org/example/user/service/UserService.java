@@ -1,15 +1,12 @@
 package org.example.user.service;
 
-import org.example.user.dto.UserDtos.CreateUserRequest;
-import org.example.user.dto.UserDtos.UpdateUserRequest;
-import org.example.user.dto.UserDtos.UserResponse;
+import org.example.user.dto.CreateUserRequest;
+import org.example.user.dto.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
     UserResponse create(CreateUserRequest req);
+    UserResponse getById(String userId);
     List<UserResponse> list();
-    UserResponse get(Long id);
-    UserResponse update(Long id, UpdateUserRequest req);
-    void delete(Long id);
 }

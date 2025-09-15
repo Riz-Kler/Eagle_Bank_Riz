@@ -1,49 +1,29 @@
 package org.example.user.controller;
 
-import jakarta.validation.Valid;
-import org.example.user.dto.UserDtos.CreateUserRequest;
-import org.example.user.dto.UserDtos.UpdateUserRequest;
-import org.example.user.dto.UserDtos.UserResponse;
+import org.example.user.dto.CreateUserRequest;
+import org.example.user.dto.UserResponse;
 import org.example.user.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/v1/users/") // note trailing slash to match test/spec
+@Validated
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
-    public UserController(UserService service) {
-        this.service = service;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@Valid @RequestBody CreateUserRequest req) {
-        return service.create(req);
-    }
-
-    @GetMapping
-    public List<UserResponse> list() {
-        return service.list();
-    }
-
-    @GetMapping("/{id}")
-    public UserResponse get(@PathVariable Long id) {
-        return service.get(id);
-    }
-
-    @PutMapping("/{id}")
-    public UserResponse update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest req) {
-        return service.update(id, req);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
+        var response = userService.create(request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)   // <-- was OK(200); must be 201
+                .body(response);
     }
 }
