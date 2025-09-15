@@ -175,9 +175,7 @@
                 <version>3.2.5</version>
                 <configuration>
                     <!-- keep your existing source/target here -->
-                    <excludes>
-                        <exclude>org/example/account/**</exclude>
-                    </excludes>
+
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>

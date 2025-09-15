@@ -666,7 +666,11 @@ components:
         - currency
         - createdTimestamp
         - updatedTimestamp
+        - userId
       properties:
+        userId:
+          type: string
+          example: usr-ABCDEFG1
         accountNumber:
           type: string
           format: ^01\d{6}$
@@ -683,6 +687,7 @@ components:
           type: string
           enum: 
             - "personal"
+            - "current"
         balance:
           type: number
           format: double
