@@ -79,3 +79,14 @@ Vitest dashboard: http://localhost:51204/vitest
 
 Coverage
 npm run coverage
+------------------------------------------------------------------------------------------------------------------------
+
+# create account, capture accountNumber from response
+# deposit
+curl -X POST "http://localhost:8080/v1/accounts/01012345/transactions/deposit?amount=100.00&description=seed" -H "Authorization: Bearer test-token"
+
+# withdraw
+curl -X POST "http://localhost:8080/v1/accounts/01012345/transactions/withdraw?amount=30.00&description=atm" -H "Authorization: Bearer test-token"
+
+# list
+curl "http://localhost:8080/v1/accounts/01012345/transactions" -H "Authorization: Bearer test-token"
