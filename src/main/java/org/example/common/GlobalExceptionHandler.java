@@ -1,24 +1,38 @@
 package org.example.common;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
-        List<String> details = ex.getBindingResult()
-                .getFieldErrors().stream()
-                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                .toList();
-        ApiError body = new ApiError("Validation failed", details);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String,String>> notFound(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<Map<String,String>> forbidden(SecurityException ex) {
+        return ResponseEntity.status(403).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<Map<String,String>> unprocessable(InsufficientFundsException ex) {
+        return ResponseEntity.status(422).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String,String>> badRequest(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String,String>> conflict(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(409).body(Map.of("message", "Conflict"));
     }
 }
