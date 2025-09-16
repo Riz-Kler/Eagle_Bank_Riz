@@ -95,7 +95,7 @@ curl "http://localhost:8080/v1/accounts/01012345/transactions" -H "Authorization
 # create account
 curl -s -X POST http://localhost:8080/v1/accounts \
   -H "Content-Type: application/json" \
-  -d '{"name":"Riz Kler","accountType":"CURRENT"}' | jq
+  -d '{"name":"Tom Tester","accountType":"current"}' | jq
 
 # list
 curl -s http://localhost:8080/v1/accounts | jq
