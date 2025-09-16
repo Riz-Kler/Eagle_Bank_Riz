@@ -1,59 +1,29 @@
-package org.example.user.model;
+package org.example.user.dto;
 
-import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
-@Entity
-@Table(name = "users",
-        uniqueConstraints = @UniqueConstraint(name = "uk_user_email", columnNames = "email"))
-public class User {
-    @Id
-    @Column(length = 255, nullable = false)
-    private String id;
-
-    @Column(name = "name", length = 120, nullable = false)
+public class UserResponse {
+    private String id; // String to match DB and spec
     private String name;
-
-    @Column(name = "email", length = 160, nullable = false)
     private String email;
-
-    @Column(name = "address", nullable = false)
     private String address;
-
-    @Column(name = "phone_number", length = 40, nullable = false)
     private String phoneNumber;
-
-    @Column(name = "password_hash")
-    private String passwordHash; // nullable on purpose
-
-    @Column(name = "created_at")
     private OffsetDateTime createdTimestamp;
-
-    @Column(name = "updated_at")
     private OffsetDateTime updatedTimestamp;
 
     // getters/setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
-
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
-
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
-
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-
     public OffsetDateTime getCreatedTimestamp() { return createdTimestamp; }
     public void setCreatedTimestamp(OffsetDateTime createdTimestamp) { this.createdTimestamp = createdTimestamp; }
-
     public OffsetDateTime getUpdatedTimestamp() { return updatedTimestamp; }
     public void setUpdatedTimestamp(OffsetDateTime updatedTimestamp) { this.updatedTimestamp = updatedTimestamp; }
 }

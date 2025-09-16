@@ -1,34 +1,34 @@
 package org.example.user.service;
 
+import lombok.RequiredArgsConstructor;
+import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
+@Profile("!test")
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    public AppUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public AppUserDetailsService(UserRepository userRepository) { this.userRepository = userRepository; }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // username = email in your app
         var u = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-        // Map your entity to Spring Security's UserDetails
-        List<GrantedAuthority> auth = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        // adjust getters to your field names (e.g., getPasswordHash())
-        return new User(u.getEmail(), u.getPasswordHash(), auth);
+        var pwd = java.util.Optional.ofNullable(u.getPasswordHash()).orElse("");
+        return new org.springframework.security.core.userdetails.User(
+                u.getEmail(),
+                pwd,
+                java.util.List.of()  // or ROLE_USER
+        );
     }
 }

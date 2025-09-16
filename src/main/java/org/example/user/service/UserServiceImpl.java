@@ -1,66 +1,64 @@
 package org.example.user.service;
 
-import org.example.user.dto.UserDtos.CreateUserRequest;
-import org.example.user.dto.UserDtos.UpdateUserRequest;
-import org.example.user.dto.UserDtos.UserResponse;
+import org.example.user.dto.CreateUserRequest;
+import org.example.user.dto.UserResponse;
 import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository repo) {
-        this.repo = repo;
-    }
-
-    private static UserResponse toDto(User u) {
-        return new UserResponse(u.getId(), u.getFullName(), u.getEmail());
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserResponse create(CreateUserRequest req) {
-        if (repo.existsByEmail(req.email())) {
-            throw new IllegalArgumentException("Email already in use");
-        }
-        User u = new User();
-        u.setFullName(req.fullName());
-        u.setEmail(req.email());
-        // TODO: hash with BCrypt later
-        u.setPasswordHash("{noop}" + req.password()); // demo only
-        repo.save(u);
-        return toDto(u);
+        var now = OffsetDateTime.now();
+
+        var u = new User();
+        u.setId(UUID.randomUUID().toString());
+        u.setName(req.getName());
+        u.setEmail(req.getEmail());
+        u.setAddress(req.getAddress());
+        u.setPhoneNumber(req.getPhoneNumber());
+        u.setCreatedTimestamp(now);
+        u.setUpdatedTimestamp(now);
+        // passwordHash intentionally not set for this test
+
+        var saved = userRepository.save(u);
+        return toResponse(saved);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    public UserResponse getById(String userId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found: " + userId));
+        return toResponse(user);
+    }
+
+    @Override
     public List<UserResponse> list() {
-        return repo.findAll().stream().map(UserServiceImpl::toDto).toList();
+        return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserResponse get(Long id) {
-        User u = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return toDto(u);
-    }
-
-    @Override
-    public UserResponse update(Long id, UpdateUserRequest req) {
-        User u = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        u.setFullName(req.fullName());
-        return toDto(u);
-    }
-
-    @Override
-    public void delete(Long id) {
-        if (!repo.existsById(id)) throw new IllegalArgumentException("User not found");
-        repo.deleteById(id);
+    private UserResponse toResponse(User u) {
+        var r = new UserResponse();
+        r.setId(u.getId()); // String -> String
+        r.setName(u.getName());
+        r.setEmail(u.getEmail());
+        r.setAddress(u.getAddress());
+        r.setPhoneNumber(u.getPhoneNumber());
+        r.setCreatedTimestamp(u.getCreatedTimestamp());
+        r.setUpdatedTimestamp(u.getUpdatedTimestamp());
+        return r;
     }
 }

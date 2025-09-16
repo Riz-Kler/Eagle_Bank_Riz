@@ -1,0 +1,939 @@
+openapi: 3.1.0
+info:
+  title: Take home tech task
+  version: v1.0.0
+  description: |-
+    We want you to create a REST API for Eagle Bank which conforms to this OpenAPI specification which allows a user to create, fetch, update and delete a bank account and deposit or withdraw money from the account. These will be stored as transactions against a bank account which be retrieved but not modified or deleted.
+tags:
+  - name: account
+    description: Manage a bank account
+  - name: transaction
+    description: Manage transactions on a bank account
+  - name: user
+    description: Manage a user
+paths:
+  /v1/accounts:
+    post:
+      tags:
+        - account
+      description: Create a new bank account
+      operationId: createAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Create a new bank account for the user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBankAccountRequest'
+        required: true
+      responses:
+        '201':
+          description: Bank Account has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountResponse'
+        '400':
+          description: Invalid details supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      tags:
+        - account
+      description: List accounts
+      operationId: listAccounts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The list of bank accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBankAccountsResponse'
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/accounts/{accountNumber}:
+    get:
+      tags:
+        - account
+      description: Fetch account by account number.
+      operationId: fetchAccountByAccountNumber
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The bank account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: The user was not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the bank account details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+        - account
+      description: Update account by account number.
+      operationId: updateAccountByAccountNumber
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Update bank account details for the user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBankAccountRequest'
+        required: true
+      responses:
+        '200':
+          description: The updated bank account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to update the bank account details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+        - account
+      description: Delete account by account number.
+      operationId: deleteAccountByAccountNumber
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: The bank account has been deleted
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to delete the bank account details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/accounts/{accountNumber}/transactions:
+    post:
+      tags:
+        - transaction
+      description: Create a transaction
+      operationId: createTransaction
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+      requestBody:
+        description: Create a new transaction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+        required: true
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Transaction has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Invalid details supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to delete the bank account details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '422':
+          description: Insufficient funds to process transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      tags:
+        - transaction
+      description: List transactions
+      operationId: listAccountTransaction
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The list of transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransactionsResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/accounts/{accountNumber}/transactions/{transactionId}:
+    get:
+      tags:
+        - transaction
+      description: Fetch transaction by ID.
+      operationId: fetchAccountTransactionByID
+      parameters:
+        - name: accountNumber
+          in: path
+          description: Account number of the bank account
+          required: true
+          schema:
+            type: string
+            pattern: ^01\d{6}$
+        - name: transactionId
+          in: path
+          description: ID of the transaction
+          required: true
+          schema:
+            type: string
+            pattern: ^tan-[A-Za-z0-9]$
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: Bank account was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/users/:
+    post:
+      tags:
+        - user
+      description: Create a new user
+      operationId: createUser
+      requestBody:
+        description: Create a new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+        required: true
+      responses:
+        '201':
+          description: User has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid details supplied
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/users//{userId}:
+    get:
+      tags:
+        - user
+      description: Fetch user by ID.
+      operationId: fetchUserByID
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: string
+            pattern: ^usr-[A-Za-z0-9]+$
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: User was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+        - user
+      description: Update user by ID.
+      operationId: updateUserByID
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: string
+            pattern: ^usr-[A-Za-z0-9]+$
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Update user details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        '200':
+          description: The updated user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: User was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+        - user
+      description: Delete user by ID.
+      operationId: deleteUserByID
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: string
+            pattern: ^usr-[A-Za-z0-9]+$
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: The user has been deleted
+        '400':
+          description: The request didn't supply all the necessary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '404':
+          description: User was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '403':
+          description: The user is not allowed to access the transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '409':
+          description: A user cannot be deleted when they are associated with a bank account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    CreateBankAccountRequest:
+      type: object
+      required:
+        - name
+        - accountType
+      properties:
+        name:
+          type: string
+          examples:
+            - "Personal Bank Account"
+            - "My Account"
+        accountType:
+          type: string
+          enum: 
+            - "personal"
+    UpdateBankAccountRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - "Personal Bank Account"
+            - "My Account"
+        accountType:
+          type: string
+          enum: 
+            - "personal"
+    ListBankAccountsResponse:
+      type: object
+      required:
+        - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+             $ref: "#/components/schemas/BankAccountResponse"
+    BankAccountResponse:
+      type: object
+      required:
+        - accountNumber
+        - sortCode
+        - name
+        - accountType
+        - balance
+        - currency
+        - createdTimestamp
+        - updatedTimestamp
+        - userId
+      properties:
+        userId:
+          type: string
+          example: usr-ABCDEFG1
+        accountNumber:
+          type: string
+          format: ^01\d{6}$
+          examples:
+            - "01234567"
+            - "01765432"
+        sortCode:
+          type: string
+          enum: 
+            - "10-10-10"
+        name:
+          type: string
+        accountType:
+          type: string
+          enum: 
+            - "personal"
+            - "current"
+        balance:
+          type: number
+          format: double
+          minimum: 0.00
+          maximum: 10000.00
+          description: "Currency amount with up to two decimal places"
+          examples:
+            - 0.00
+            - 1000.00
+        currency:
+          type: string
+          enum:
+            - "GBP"
+        createdTimestamp:
+          type: string
+          format: 'date-time'
+        updatedTimestamp:
+          type: string
+          format: 'date-time'
+    CreateTransactionRequest:
+      type: object
+      required:
+        - amount
+        - currency
+        - type
+      properties:
+        amount:
+          type: number
+          format: double
+          minimum: 0.00
+          maximum: 10000.00
+          description: "Currency amount with up to two decimal places"
+          examples:
+            - 10.99
+            - 1000.00
+        currency:
+          type: string
+          enum:
+            - "GBP"
+        type:
+          type: string
+          enum: 
+            - "deposit"
+            - "withdrawal"
+        reference:
+          type: string
+    ListTransactionsResponse:
+      type: object
+      required:
+        - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+             $ref: "#/components/schemas/TransactionResponse"
+    TransactionResponse:
+      type: object
+      required:
+        - id
+        - amount
+        - currency
+        - type
+        - createdTimestamp
+      properties:
+        id: 
+          type: string
+          pattern: ^tan-[A-Za-z0-9]$
+          examples:
+            - tan-123abc
+        amount:
+          type: number
+          format: double
+          minimum: 0.00
+          maximum: 10000.00
+        currency:
+          type: string
+          enum:
+            - "GBP"
+        type:
+          type: string
+          enum: 
+            - "deposit"
+            - "withdrawal"
+        reference:
+          type: string
+        userId:
+          type: string
+          format: ^usr-[A-Za-z0-9]+$
+          examples: 
+            - usr-abc123
+        createdTimestamp:
+          type: string
+          format: 'date-time'
+    CreateUserRequest:
+      type: object
+      required:
+        - name
+        - address
+        - phoneNumber
+        - email
+      properties:
+        name:
+          type: string
+          examples:
+            - "Test User"
+        address:
+          type: object
+          required:
+            - line1
+            - town
+            - county
+            - postcode
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            line3:
+              type: string
+            town:
+              type: string
+            county:
+              type: string
+            postcode:
+              type: string
+        phoneNumber:
+          type: string
+          format: ^\+[1-9]\d{1,14}$
+        email:
+          type: string
+          format: email    
+    UpdateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - "Test User"
+        address:
+          type: object
+          required:
+            - line1
+            - town
+            - county
+            - postcode
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            line3:
+              type: string
+            town:
+              type: string
+            county:
+              type: string
+            postcode:
+              type: string
+        phoneNumber:
+          type: string
+          format: ^\+[1-9]\d{1,14}$
+        email:
+          type: string
+          format: email
+    UserResponse:
+      type: object
+      required:
+        - id
+        - name
+        - address
+        - phoneNumber
+        - email
+        - createdTimestamp
+        - updatedTimestamp
+      properties:
+        id:
+          type: string
+          format: ^usr-[A-Za-z0-9]+$
+        name:
+          type: string
+          examples:
+            - "Test User"
+        address:
+          type: object
+          required:
+            - line1
+            - town
+            - county
+            - postcode
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            line3:
+              type: string
+            town:
+              type: string
+            county:
+              type: string
+            postcode:
+              type: string
+        phoneNumber:
+          type: string
+          format: ^\+[1-9]\d{1,14}$
+        email:
+          type: string
+          format: email
+        createdTimestamp:
+          type: string
+          format: 'date-time'
+        updatedTimestamp:
+          type: string
+          format: 'date-time'
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    BadRequestErrorResponse:
+      type: object
+      required:
+        - message
+        - details
+      properties:
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            required:
+              - field
+              - message
+              - type
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              type:
+                type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,49 +1,44 @@
 package org.example.security;
 
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-//import lombok.Value;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-
-@Component
+@Profile("!test")   // only load in non-test profiles
+@Service
 public class JwtService {
+    private final Key key;
+    private final String issuer;
+    private final long expirationMinutes;
 
-    @Value("${app.jwt.secret}")
-    private String secret;
-
-    @Value("${app.jwt.expiry-minutes}")
-    private long expiryMinutes;
+    public JwtService(
+            @Value("${security.jwt.secret}") String secret,
+            @Value("${security.jwt.issuer}") String issuer,
+            @Value("${security.jwt.expiration-minutes}") long expirationMinutes) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.issuer = issuer;
+        this.expirationMinutes = expirationMinutes;
+    }
 
     public String generate(String subject) {
-        var key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        var now = Instant.now();
-
+        Instant now = Instant.now();
         return Jwts.builder()
                 .setSubject(subject)
+                .setIssuer(issuer)
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(expiryMinutes, ChronoUnit.MINUTES)))
-               // .signWith(key, SignatureAlgorithm.HS256
-                        .signWith(key) // no algorithm param
+                .setExpiration(Date.from(now.plusSeconds(expirationMinutes * 60)))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String validateAndGetSubject(String token) {
-        var key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        return jws.getBody().getSubject();
     }
 }
