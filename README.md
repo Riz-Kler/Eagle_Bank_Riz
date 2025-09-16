@@ -90,3 +90,21 @@ curl -X POST "http://localhost:8080/v1/accounts/01012345/transactions/withdraw?a
 
 # list
 curl "http://localhost:8080/v1/accounts/01012345/transactions" -H "Authorization: Bearer test-token"
+------------------------------------------------------------------------------------------------------------------------
+
+# create account
+curl -s -X POST http://localhost:8080/v1/accounts \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Tom Tester","accountType":"current"}' | jq
+
+# list
+curl -s http://localhost:8080/v1/accounts | jq
+
+# get by account number (replace 01xxxxxx)
+curl -s http://localhost:8080/v1/accounts/01###### | jq
+
+# delete
+curl -i -X DELETE http://localhost:8080/v1/accounts/01######
+
+Quick smoke test
+
